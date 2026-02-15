@@ -5,68 +5,50 @@
 <title>Nuestro Universo</title>
 
 <style>
-body {
-margin: 0;
-overflow: hidden;
-background: radial-gradient(circle at center, #1a1f4f, #0d0f2b 70%);
-font-family: Arial, sans-serif;
-}
-
-canvas { display: block; }
+body { margin:0; overflow:hidden; background:#0d0f2b; font-family:Arial; }
+canvas { display:block; }
 
 #intro {
-position: absolute;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-background: rgba(10,10,30,0.9);
-padding: 30px;
-border-radius: 15px;
-text-align: center;
-color: white;
-box-shadow: 0 0 30px rgba(120, 90, 255, 0.7);
-z-index: 10;
-}
-
-#intro button {
-margin-top: 15px;
-padding: 10px 20px;
-border: none;
-background: #5f6fff;
-color: white;
-border-radius: 8px;
-cursor: pointer;
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:rgba(10,10,30,0.95);
+padding:30px;
+border-radius:15px;
+text-align:center;
+color:white;
+z-index:10;
 }
 
 #modal {
-position: absolute;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-background: rgba(20,20,50,0.95);
-padding: 20px;
-border-radius: 15px;
-display: none;
-color: white;
-text-align: center;
-width: 300px;
-z-index: 10;
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:rgba(20,20,50,0.95);
+padding:20px;
+border-radius:15px;
+display:none;
+color:white;
+text-align:center;
+width:300px;
+z-index:10;
 }
 
 #modal img {
-width: 100%;
-border-radius: 10px;
-margin-bottom: 10px;
+width:100%;
+border-radius:10px;
+margin-bottom:10px;
 }
 
-#closeBtn {
-margin-top: 10px;
-padding: 8px 15px;
-background: #7b5fff;
-border: none;
-color: white;
-border-radius: 8px;
-cursor: pointer;
+button {
+padding:8px 15px;
+background:#6c63ff;
+border:none;
+color:white;
+border-radius:8px;
+cursor:pointer;
 }
 </style>
 </head>
@@ -74,19 +56,18 @@ cursor: pointer;
 <body>
 
 <div id="intro">
-<h1>Nuestro Universo Azul 💙🌌</h1>
-<p>Explora cada planeta… cada uno guarda un recuerdo, un momento y un pedacito de mi corazón.</p>
-<button onclick="startExperience()">Entrar al universo</button>
+<h1>Nuestro Universo 💙</h1>
+<p>Explora cada planeta… cada uno guarda algo especial.</p>
+<button id="enterBtn">Entrar</button>
 </div>
 
 <div id="modal">
 <h2 id="modalTitle"></h2>
-<img id="modalImg" src="">
+<img id="modalImg">
 <p id="modalText"></p>
 <button id="closeBtn">Cerrar</button>
 </div>
 
-<!-- Three.js versión clásica estable -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
 
@@ -113,25 +94,25 @@ let mouse = new THREE.Vector2();
 let planets = [];
 
 let titles = [
-"Nuestro Pequeño Mundo",
-"Dulce Como Tú",
-"Entre Cielos y Promesas",
-"Luz en Movimiento",
-"Donde el Tiempo se Detuvo",
-"Mi Estrella Azul",
-"Un Beso Eterno",
-"La Sonrisa que Ilumina mi Universo"
+"Nuestro Mundo",
+"Dulce Recuerdo",
+"Cielo Azul",
+"Luz Eterna",
+"Momento Infinito",
+"Estrella Mía",
+"Beso Guardado",
+"Universo Nuestro"
 ];
 
 let texts = [
-"Desde lo más simple hasta lo más grande, contigo todo se siente hogar.",
-"Ese día entendí que tu dulzura no se compara con nada en este universo.",
-"El cielo fue testigo de mis promesas silenciosas contigo.",
-"Incluso en movimiento, tú eres mi calma.",
-"El mundo se detuvo cuando entendí que eras tú.",
-"Brillas diferente… y siempre iluminas mi oscuridad.",
-"Un momento, un beso, un recuerdo eterno.",
-"Tu sonrisa es la razón por la que mi universo tiene luz."
+"Un pedacito de nosotros.",
+"Un recuerdo que me hace sonreír.",
+"El cielo fue testigo.",
+"Brillas siempre.",
+"El tiempo se detuvo.",
+"Mi estrella favorita.",
+"Un momento eterno.",
+"Mi universo eres tú."
 ];
 
 for(let i=0;i<8;i++){
@@ -147,20 +128,6 @@ planet.userData = {title: titles[i], text: texts[i], img:`p${i+1}.jpg`};
 
 scene.add(planet);
 planets.push(planet);
-}
-
-for(let i=0;i<200;i++){
-let starGeo = new THREE.SphereGeometry(0.1,8,8);
-let starMat = new THREE.MeshBasicMaterial({color:0xffffff});
-let star = new THREE.Mesh(starGeo, starMat);
-
-star.position.set(
-(Math.random()-0.5)*100,
-(Math.random()-0.5)*100,
-(Math.random()-0.5)*100
-);
-
-scene.add(star);
 }
 
 window.addEventListener('click', function(event){
@@ -183,8 +150,8 @@ document.getElementById("closeBtn").onclick = function(){
 document.getElementById("modal").style.display = "none";
 }
 
-function startExperience(){
-document.getElementById("intro").style.display="none";
+document.getElementById("enterBtn").onclick = function(){
+document.getElementById("intro").style.display = "none";
 }
 
 function animate(){
