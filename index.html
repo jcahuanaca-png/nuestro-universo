@@ -5,28 +5,21 @@
 <title>Nuestro Universo</title>
 
 <style>
-body { margin:0; overflow:hidden; background:#0d0f2b; font-family:Arial; }
-canvas { display:block; }
-
-#intro {
-position:absolute;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-background:rgba(10,10,30,0.95);
-padding:30px;
-border-radius:15px;
-text-align:center;
-color:white;
-z-index:10;
+body {
+margin:0;
+overflow:hidden;
+background:black;
+font-family:Arial;
 }
+
+canvas { display:block; }
 
 #modal {
 position:absolute;
 top:50%;
 left:50%;
 transform:translate(-50%,-50%);
-background:rgba(20,20,50,0.95);
+background:rgba(0,0,0,0.9);
 padding:20px;
 border-radius:15px;
 display:none;
@@ -44,7 +37,7 @@ margin-bottom:10px;
 
 button {
 padding:8px 15px;
-background:#6c63ff;
+background:#4444ff;
 border:none;
 color:white;
 border-radius:8px;
@@ -55,17 +48,11 @@ cursor:pointer;
 
 <body>
 
-<div id="intro">
-<h1>Nuestro Universo 💙</h1>
-<p>Explora cada planeta… cada uno guarda algo especial.</p>
-<button id="enterBtn">Entrar</button>
-</div>
-
 <div id="modal">
 <h2 id="modalTitle"></h2>
 <img id="modalImg">
 <p id="modalText"></p>
-<button id="closeBtn">Cerrar</button>
+<button onclick="closeModal()">Cerrar</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -74,10 +61,10 @@ cursor:pointer;
 <script>
 
 let scene = new THREE.Scene();
-scene.background = new THREE.Color(0x0a0f2c);
+scene.background = new THREE.Color(0x000000);
 
-let camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-camera.position.z = 20;
+let camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 2000);
+camera.position.z = 30;
 
 let renderer = new THREE.WebGLRenderer({antialias:true});
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -86,51 +73,90 @@ document.body.appendChild(renderer.domElement);
 let controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.autoRotate = true;
-controls.autoRotateSpeed = 0.5;
+controls.autoRotateSpeed = 0.3;
 
-let textureLoader = new THREE.TextureLoader();
 let raycaster = new THREE.Raycaster();
 let mouse = new THREE.Vector2();
+let textureLoader = new THREE.TextureLoader();
 let planets = [];
 
+
+// ⭐ CREAR ESTRELLAS BRILLANTES
+let starGeometry = new THREE.BufferGeometry();
+let starCount = 2000;
+let positions = [];
+
+for(let i=0; i<starCount; i++){
+positions.push(
+(Math.random()-0.5)*2000,
+(Math.random()-0.5)*2000,
+(Math.random()-0.5)*2000
+);
+}
+
+starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions,3));
+
+let starMaterial = new THREE.PointsMaterial({
+color:0xffffff,
+size:2,
+transparent:true
+});
+
+let stars = new THREE.Points(starGeometry, starMaterial);
+scene.add(stars);
+
+
+// 🪐 TEXTOS
 let titles = [
-"Nuestro Mundo",
-"Dulce Recuerdo",
-"Cielo Azul",
-"Luz Eterna",
-"Momento Infinito",
-"Estrella Mía",
-"Beso Guardado",
-"Universo Nuestro"
+"Nuestra Historia",
+"Primer Recuerdo",
+"Un Viaje",
+"Una Sonrisa",
+"Un Momento",
+"Un Abrazo",
+"Un Sueño",
+"Nuestro Universo"
 ];
 
 let texts = [
-"Un pedacito de nosotros.",
-"Un recuerdo que me hace sonreír.",
-"El cielo fue testigo.",
-"Brillas siempre.",
-"El tiempo se detuvo.",
-"Mi estrella favorita.",
-"Un momento eterno.",
-"Mi universo eres tú."
+"Todo comenzó aquí.",
+"El inicio de algo especial.",
+"Donde el tiempo se detuvo.",
+"Esa sonrisa inolvidable.",
+"Un instante eterno.",
+"El abrazo que lo cambió todo.",
+"Soñando juntos.",
+"Siempre tú y yo."
 ];
 
+
+// 🪐 CREAR PLANETAS
 for(let i=0;i<8;i++){
-let geometry = new THREE.SphereGeometry(2,32,32);
+
+let geometry = new THREE.SphereGeometry(3,32,32);
 let material = new THREE.MeshBasicMaterial({
-map: textureLoader.load(`p${i+1}.jpg`)
+map: textureLoader.load(`p${i+1}.jpeg`)
 });
 
 let planet = new THREE.Mesh(geometry, material);
-planet.position.x = Math.cos(i * Math.PI/4) * 12;
-planet.position.y = Math.sin(i * Math.PI/4) * 6;
-planet.userData = {title: titles[i], text: texts[i], img:`p${i+1}.jpg`};
+
+planet.position.x = Math.cos(i * Math.PI/4) * 15;
+planet.position.y = Math.sin(i * Math.PI/4) * 10;
+
+planet.userData = {
+title: titles[i],
+text: texts[i],
+img: `p${i+1}.jpeg`
+};
 
 scene.add(planet);
 planets.push(planet);
 }
 
+
+// 🖱 CLICK
 window.addEventListener('click', function(event){
+
 mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
 mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
 
@@ -144,25 +170,25 @@ document.getElementById("modalText").innerText = obj.userData.text;
 document.getElementById("modalImg").src = obj.userData.img;
 document.getElementById("modal").style.display = "block";
 }
+
 });
 
-document.getElementById("closeBtn").onclick = function(){
+function closeModal(){
 document.getElementById("modal").style.display = "none";
 }
 
-document.getElementById("enterBtn").onclick = function(){
-document.getElementById("intro").style.display = "none";
-}
 
+// 🔄 ANIMACIÓN
 function animate(){
 requestAnimationFrame(animate);
+stars.rotation.y += 0.0005;
 controls.update();
 renderer.render(scene,camera);
 }
+
 animate();
 
 </script>
 
 </body>
 </html>
-
